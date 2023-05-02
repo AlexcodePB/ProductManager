@@ -32,35 +32,29 @@ class productManager {
   }
 
   addProducts(title, description, price, thumbnail, code, stock) {
-    const fields = [
-      "title",
-      "description",
-      "price",
-      "thumbnail",
-      "code",
-      "stock",
-    ];
-    for (const field of fields) {
-      if (!this._isValidField(eval(field))) {
-        throw new Error(
-          `Error: ${field} cannot be undefined, null or an empty string`
-        );
-      }
+    // Validar que todos los campos están presentes y no son nulos o cadenas vacías
+    if (
+      [title, description, price, thumbnail, code, stock].some(
+        (field) => !field
+      )
+    ) {
+      throw new Error(
+        "Error!!, code field cannot be repeated and fields cannot be undefined, null or empty space"
+      );
     }
+
+    // Crear el nuevo producto
     const newProduct = {
       title,
       description,
       price,
       thumbnail,
       code,
-      stock,
       id: this.#generateId(),
     };
-    this.products.push(newProduct);
-  }
 
-  _isValidField(value) {
-    return value !== undefined && value !== null && value !== "";
+    // Agregar el nuevo producto a la lista de productos
+    this.products = [...this.products, newProduct];
   }
 }
 
