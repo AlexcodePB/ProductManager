@@ -32,7 +32,6 @@ class productManager {
   }
 
   addProducts(title, description, price, thumbnail, code, stock) {
-    // Validar que todos los campos están presentes y no son nulos o cadenas vacías
     if (
       [title, description, price, thumbnail, code, stock].some(
         (field) => !field
@@ -43,7 +42,6 @@ class productManager {
       );
     }
 
-    // Crear el nuevo producto
     const newProduct = {
       title,
       description,
@@ -53,7 +51,6 @@ class productManager {
       id: this.#generateId(),
     };
 
-    // Agregar el nuevo producto a la lista de productos
     this.products = [...this.products, newProduct];
   }
 }
