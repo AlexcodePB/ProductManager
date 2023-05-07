@@ -16,10 +16,8 @@ class productManager {
   }
 
   async addProducts(title, description, price, thumbnail, code, stock) {
-    if (![title, description, price, thumbnail, code, stock].every(Boolean)) {
-      throw new Error(
-        "¡Error! Los campos no pueden ser indefinidos, nulos o espacios vacíos."
-      );
+    if (!title || !description || !price || !thumbnail || !code || !stock) {
+      throw new Error("Error: todos los campos son requeridos");
     }
 
     const file = await fs.promises.readFile(this.path, "utf-8");
@@ -109,7 +107,7 @@ const myProduct = new productManager();
 
 async function NewProd() {
   //agrego los poductos
-  await myProduct.addProducts(
+  /*   await myProduct.addProducts(
     "Notebook lenovo",
     "notebook lenovo de 13 pulgadas, core i9, con placa de video",
     200,
@@ -160,10 +158,13 @@ async function NewProd() {
     "149ljk",
     69
   );
-  await myProduct.getProducts();
-  // utiliza esta linea si quieres un producto por id
-  /* console.log("llamada a producto por Id");
-  await myProduct.getProductById(2); */
+  await myProduct.getProducts(); */
+  /* //en esta parte pruebo que pasa cuando mando un addProducts vacio
+  await myProduct.addProducts();
+  await myProduct.getProducts(); */
+  //utiliza esta linea si quieres un producto por id
+  console.log("llamada a producto por Id");
+  await myProduct.getProductById(4);
   //En esta linea actualizo el titulo de mi producto
   /* console.log("producto sin cambios");
   await myProduct.getProductById(2);
@@ -176,7 +177,6 @@ async function NewProd() {
   console.log("despues de borrar mi producto");
   await myProduct.deleteProducts(2);
   await myProduct.getProducts(); */
-
   //borro todo mi archivo
   /*   await myProduct.clearProducts();
   console.log("despues de eliminar todos mis objetos");
