@@ -1,83 +1,185 @@
-//@ts-check
+const fs = require("fs");
+const createFile = async () => {
+  if (!fs.existsSync("products.json")) {
+    return await fs.promises.writeFile("products.json", "[]");
+  }
+};
+
+createFile();
+
 class productManager {
-  constructor() {
+  constructor(fileName) {
+    this.path = "products.json";
+    this.fileName = fileName;
     this.products = [];
-  }
-  getProducts() {
-    console.log(this.products);
-    return this.products;
-  }
-  getProductById(id) {
-    const found = this.products.find((prod) => prod.id === id);
-    if (found) {
-      return found;
-    } else {
-      console.log("Not found");
-      return undefined;
-    }
-  }
-  #getProductByCode(code) {
-    const existsInArray = this.products.find((prod) => prod.code === code);
-    return existsInArray;
-  }
-  #generateId() {
-    let maxId = 0;
-    for (let i = 0; i < this.products.length; i++) {
-      const prod = this.products[i];
-      if (prod.id > maxId) {
-        maxId = prod.id;
-      }
-    }
-    return ++maxId;
+    this.id = 0;
   }
 
-  addProducts(title, description, price, thumbnail, code, stock) {
-    if (
-      [title, description, price, thumbnail, code, stock].some(
-        (field) => !field
-      )
-    ) {
+  async addProducts(title, description, price, thumbnail, code, stock) {
+    if (![title, description, price, thumbnail, code, stock].every(Boolean)) {
       throw new Error(
-        "Error!!, code field cannot be repeated and fields cannot be undefined, null or empty space"
+        "¡Error! Los campos no pueden ser indefinidos, nulos o espacios vacíos."
       );
     }
 
+    const file = await fs.promises.readFile(this.path, "utf-8");
+    const products = file ? JSON.parse(file) : [];
+
+    const isDuplicated = products.find((product) => product.code === code);
+    if (isDuplicated) {
+      console.log("El producto con condigo: ", code, " ya existe");
+      return;
+    }
+
     const newProduct = {
+      id: this.#generateId(),
       title,
       description,
       price,
       thumbnail,
       code,
-      id: this.#generateId(),
     };
+    products.push(newProduct);
 
-    this.products = [...this.products, newProduct];
+    await fs.promises.writeFile(this.path, JSON.stringify(products));
+    console.log(`Producto ${products.name} agregado con éxito`);
+  }
+
+  #generateId() {
+    return ++this.id;
+  }
+
+  async getProducts() {
+    const fileProducts = await fs.promises.readFile(this.path, "utf-8");
+    const fileProductsParse = JSON.parse(fileProducts);
+    console.log(fileProductsParse);
+  }
+
+  async getProductById(id) {
+    const fileProducts = await fs.promises.readFile(this.path, "utf-8");
+    const fileProductsParse = JSON.parse(fileProducts);
+    const findProd = fileProductsParse.find((prod) => prod.id == id);
+    if (findProd) {
+      return console.log(findProd);
+    } else {
+      console.log("Producto no encontrado");
+    }
+  }
+
+  async updateProduct(id, prop, newValue) {
+    const fileProducts = await fs.promises.readFile(this.path, "utf-8");
+    const fileProductsParse = JSON.parse(fileProducts);
+
+    const findProd = fileProductsParse.find((prod) => prod.id == id);
+    if (findProd == undefined) {
+      console.log("Producto no encontrado");
+    } else {
+      findProd[prop] = newValue;
+      const productsString = JSON.stringify(fileProductsParse);
+      await fs.promises.writeFile(this.path, productsString);
+    }
+  }
+
+  async deleteProducts(id) {
+    const fileProducts = await fs.promises.readFile(this.path, "utf-8");
+    const fileProductsParse = JSON.parse(fileProducts);
+    const positionProduct = fileProductsParse.findIndex(
+      (prod) => prod.id == id
+    );
+    if (positionProduct == -1) {
+      console.log("Producto no encontrado");
+    } else {
+      delete fileProductsParse[positionProduct];
+      const productsDelete = fileProductsParse.filter(
+        (prod) => prod !== undefined
+      );
+      const productsString = JSON.stringify(productsDelete);
+      await fs.promises.writeFile(this.path, productsString);
+    }
+  }
+
+  async clearProducts() {
+    const filePath = "products.json";
+    const data = JSON.stringify([]);
+    await fs.promises.writeFile(filePath, data);
   }
 }
 
 const myProduct = new productManager();
 
-myProduct.addProducts(
-  "Monitor Led Samsung",
-  'Monitor de 24", led, maxima calidad en monitores',
-  80000,
-  "imagen de monitor",
-  "#ash333",
-  "50"
-);
-myProduct.addProducts(
-  "Monitor Led Samsung",
-  'Monitor de 27", led, maxima calidad en monitores',
-  120000,
-  "imagen de monitor",
-  "#ash323",
-  "50"
-);
+async function NewProd() {
+  //agrego los poductos
+  await myProduct.addProducts(
+    "Notebook lenovo",
+    "notebook lenovo de 13 pulgadas, core i9, con placa de video",
+    200,
+    "Alguna Imagen",
+    "sdj234",
+    25
+  );
+  await myProduct.addProducts(
+    "Monitor LCD",
+    "monitor lcd de 24 pulgadas",
+    58800,
+    "imagen monitor",
+    "lkh234",
+    27
+  );
+  await myProduct.addProducts(
+    "Mouse",
+    "mouse logitec",
+    28800,
+    "imagen mouse",
+    "lkm235",
+    66
+  );
 
-const found1 = myProduct.getProductById(1);
-const found2 = myProduct.getProductById(2);
+  await myProduct.addProducts(
+    "guitarra",
+    "es una guitarra electrica marca kapone",
+    42322,
+    "fotoGuitarra",
+    "234oio",
+    23
+  );
 
-console.log(found1);
-console.log(found2);
+  await myProduct.addProducts(
+    "pizarra",
+    "Pizarra blanca de 1,20m x 80m",
+    20000,
+    "fotoDeGuitarra",
+    "879ijw",
+    60
+  );
 
-//console.log(myProduct.products);
+  await myProduct.addProducts(
+    "Calculadora",
+    "Casio classwiz fx-570LA",
+    42322,
+    "fotoCalculadora",
+    "149ljk",
+    69
+  );
+  await myProduct.getProducts();
+  // utiliza esta linea si quieres un producto por id
+  /* console.log("llamada a producto por Id");
+  await myProduct.getProductById(2); */
+  //En esta linea actualizo el titulo de mi producto
+  /* console.log("producto sin cambios");
+  await myProduct.getProductById(2);
+  console.log("producto con cambios");
+  await myProduct.updateProduct(2, "title", "mi nuevo producto");
+  await myProduct.getProductById(2); */
+  //borro un objeto de mi jason
+  /* console.log("antes de borrar");
+  await myProduct.getProducts();
+  console.log("despues de borrar mi producto");
+  await myProduct.deleteProducts(2);
+  await myProduct.getProducts(); */
+
+  //borro todo mi archivo
+  /*   await myProduct.clearProducts();
+  console.log("despues de eliminar todos mis objetos");
+  await myProduct.getProducts(); */
+}
+NewProd();
