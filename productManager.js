@@ -20,6 +20,8 @@ class productManager {
       throw new Error("Error: todos los campos son requeridos");
     }
 
+
+    
     const file = await fs.promises.readFile(this.path, "utf-8");
     const products = file ? JSON.parse(file) : [];
 
