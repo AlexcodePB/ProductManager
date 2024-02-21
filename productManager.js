@@ -109,7 +109,7 @@ const myProduct = new productManager();
 
 async function NewProd() {
   //agrego los poductos
-  /*   await myProduct.addProducts(
+  await myProduct.addProducts(
     "Notebook lenovo",
     "notebook lenovo de 13 pulgadas, core i9, con placa de video",
     200,
@@ -160,28 +160,28 @@ async function NewProd() {
     "149ljk",
     69
   );
-  await myProduct.getProducts(); */
-  /* //en esta parte pruebo que pasa cuando mando un addProducts vacio
+  await myProduct.getProducts();
+  //en esta parte pruebo que pasa cuando mando un addProducts vacio
   await myProduct.addProducts();
-  await myProduct.getProducts(); */
+  await myProduct.getProducts();
   //utiliza esta linea si quieres un producto por id
   console.log("llamada a producto por Id");
   await myProduct.getProductById(4);
   //En esta linea actualizo el titulo de mi producto
-  /* console.log("producto sin cambios");
+  console.log("producto sin cambios");
   await myProduct.getProductById(2);
   console.log("producto con cambios");
   await myProduct.updateProduct(2, "title", "mi nuevo producto");
-  await myProduct.getProductById(2); */
+  await myProduct.getProductById(2);
   //borro un objeto de mi jason
-  /* console.log("antes de borrar");
+  console.log("antes de borrar");
   await myProduct.getProducts();
   console.log("despues de borrar mi producto");
   await myProduct.deleteProducts(2);
-  await myProduct.getProducts(); */
+  await myProduct.getProducts();
   //borro todo mi archivo
-  /*   await myProduct.clearProducts();
+  await myProduct.clearProducts();
   console.log("despues de eliminar todos mis objetos");
-  await myProduct.getProducts(); */
+  await myProduct.getProducts();
 }
 NewProd();
